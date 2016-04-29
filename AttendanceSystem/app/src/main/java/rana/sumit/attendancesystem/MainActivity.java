@@ -1,28 +1,22 @@
 package rana.sumit.attendancesystem;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 /**
  * Created by ranaf on 4/28/2016.
  */
-public class MainActivity extends Activity {
-    private Button mNext;
+public class MainActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mNext = (Button)findViewById(R.id.button1);
-        mNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent it = new Intent(getApplicationContext(), Login.class);
-                startActivity(it);
-                finish();
-            }
-        });
+        Fragment fragment = new MainFragment();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.activity_frame, fragment);
+        ft.commit();
+
     }
 }

@@ -1,13 +1,13 @@
 package rana.sumit.attendancesystem;
 
-import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,68 +26,67 @@ import java.net.URL;
 /**
  * Created by ranaf on 4/20/2016.
  */
-public class Login extends Fragment {
+public class LoginFragment extends Fragment implements View.OnClickListener{
     private Button mLogin;
     private TextView mSignUp;
     private EditText mEmail, mPassword;
     private Context mContext;
     private CoordinatorLayout coordinatorLayout;
     private String email, password = null;
+    private View mView;
+    private LoginTask mTask;
+
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-    }
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.login, container, false);
-        mContext = view.getContext();
-        mEmail = (EditText) view.findViewById(R.id.editText1);
-        mPassword = (EditText) view.findViewById(R.id.editText2);
-        coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinatorLayout);
-        mLogin = (Button) view.findViewById(R.id.button1);
-        mLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        mView = inflater.inflate(R.layout.login, container, false);
+        mContext = mView.getContext();
+        mEmail = (EditText) mView.findViewById(R.id.editText1);
+        mPassword = (EditText) mView.findViewById(R.id.editText2);
+        coordinatorLayout = (CoordinatorLayout) mView.findViewById(R.id.coordinatorLayout);
+        mLogin = (Button) mView.findViewById(R.id.button1);
+        mLogin.setOnClickListener(this);
+        mSignUp = (TextView) mView.findViewById(R.id.link_signup);
+        mSignUp.setOnClickListener(this);
+        setRetainInstance(true);
+        return mView;
+    }
+    protected void startLoginTask() {
+
+        mTask = new LoginTask();
+        mTask.execute();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()){
+            case R.id.button1:
                 if(isNetworkConnected()) {
                     if(validation()) {
-                        LoginTask task = new LoginTask();
-                        task.execute();
+                        startLoginTask();
                     }
                 } else {
                     Snackbar snackbar = Snackbar
                             .make(coordinatorLayout, "No Internet Connection :(", Snackbar.LENGTH_LONG);
                     snackbar.show();
                 }
-
-
-            }
-        });
-        mSignUp = (Button) view.findViewById(R.id.button2);
-        mSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent it = new Intent(mContext, Signup.class);
-                startActivity(it);
-                getActivity().finish();
-            }
-        });
-        return view;
+                break;
+            case R.id.link_signup:
+                FragmentTransaction t = this.getFragmentManager().beginTransaction();
+                Fragment mFrag = new Signup();
+                t.replace(R.id.activity_frame, mFrag);
+                t.commit();
+                break;
+        }
     }
     private class LoginTask extends AsyncTask<Void, Void, String> {
         @Override
         protected String doInBackground(Void... params) {
-            String result = null;
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
             String forecastJsonStr = null;
             try{
-                //Login URL
+                //LoginFragment URL
                 URL url = new URL("http://192.168.1.29:3000/auth/login");
                 //Create the request to open the connection with GET
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -108,7 +107,6 @@ public class Login extends Fragment {
                         // buffer for debugging.
                         buffer.append(line + "\n");
                     }
-
                     if (buffer.length() == 0) {
                         // Stream was empty.  No point in parsing.
                         return null;
@@ -134,8 +132,6 @@ public class Login extends Fragment {
                     }
                 }
             }
-
-
         }
 
     }
@@ -153,7 +149,6 @@ public class Login extends Fragment {
             mPassword.setError("Cannot be blank");
             validate = false;
         }
-
         return validate;
     }
 

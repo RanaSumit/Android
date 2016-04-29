@@ -13,7 +13,8 @@
     tools:showIn="@layout/app_bar_dash_board">
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" android:id="@+id/mainFrame">
+        android:layout_height="match_parent"
+        android:id="@+id/mainFrame">
     </FrameLayout>
 
 </RelativeLayout>

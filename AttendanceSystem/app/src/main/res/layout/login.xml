@@ -10,6 +10,11 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/mainFrame1">
+
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -63,5 +68,6 @@
                 android:textSize="16dip"/>
 
         </LinearLayout>
+        </FrameLayout>
     </ScrollView>
 </android.support.design.widget.CoordinatorLayout>
