@@ -4,7 +4,7 @@
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SignUpActivity">
+    tools:context=".SignupActivity">
 
 
     <ScrollView
@@ -31,20 +31,18 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp">
 
-                <EditText android:id="@+id/editText1"
+                <EditText android:id="@+id/firstName_editText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPersonName"
                     android:hint="FirstName" />
             </android.support.design.widget.TextInputLayout>
-
-
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp">
-                <EditText android:id="@+id/editText2"
+                <EditText android:id="@+id/lastName_editText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPersonName"
@@ -56,19 +54,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp">
-                <EditText android:id="@+id/editText3"
+                <EditText android:id="@+id/email_editText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress"
                     android:hint="Email" />
             </android.support.design.widget.TextInputLayout>
-
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp">
-                <EditText android:id="@+id/editText4"
+                <EditText android:id="@+id/password_editText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
@@ -81,14 +78,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp">
-                <EditText android:id="@+id/editText5"
+                <EditText android:id="@+id/rePassword_editText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
                     android:hint="ReEnter-Password"/>
             </android.support.design.widget.TextInputLayout>
             <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
-                android:id="@+id/spinner1"
+                android:id="@+id/category_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Select Category"
@@ -97,27 +94,21 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical">
                 <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/button1"
+                    android:id="@+id/signup_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="24dp"
                     android:padding="12dp"
+                    android:layout_gravity="center"
                     android:text="Create Account"/>
-                <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/button2"
+                <TextView android:id="@+id/link_login"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="24dp"
-                    android:padding="12dp"
-                    android:text="Login"/>
+                    android:layout_gravity="center"
+                    android:text="Already have an Account? Login !"
+                    android:textSize="16dip"/>
             </LinearLayout>
-
         </LinearLayout>
-
     </ScrollView>
-
 </android.support.design.widget.CoordinatorLayout>
