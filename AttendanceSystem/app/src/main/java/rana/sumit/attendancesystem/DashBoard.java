@@ -1,6 +1,10 @@
 package rana.sumit.attendancesystem;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -15,13 +19,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 public class Dashboard extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
+    private static String AUTHORITY = "ec2-52-24-149-81.us-west-2.compute.amazonaws.com:3000";
+    private static String AUTH = "auth";
+    private static String OPERATION = "signout";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -29,7 +42,6 @@ public class Dashboard extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         if (savedInstanceState == null) {
@@ -57,10 +69,13 @@ public class Dashboard extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        String check = null;
         if (id == R.id.action_logout) {
-            LogOut task = new LogOut();
-            task.execute(new String[]{check});
+            if(isNetworkConnected()) {
+                LogoutTask task = new LogoutTask();
+                task.execute();
+            }else {
+                Toast.makeText(Dashboard.this, "No Internet Connection !!", Toast.LENGTH_SHORT).show();
+            }
             return true;
         }
 
@@ -90,56 +105,54 @@ public class Dashboard extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    private class LogOut extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-        }
+    private class LogoutTask extends AsyncTask<String, Void, String> {
+        private String uri;
 
         @Override
         protected String doInBackground(String... params) {
             String result = null;
-            /*//ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
-            //postParameters.add(new BasicNameValuePair("email", params[0]));
-            String result = null;
-            //String url = "http://10.189.93.95:3000/auth/signout";
-            String url = "http://smartwaterwatch.mybluemix.net/auth/signout";
-            BufferedReader in = null;
-            StringBuffer sb = new StringBuffer("");
-
+            HttpURLConnection urlConnection = null;
             try {
-                Log.d("1","");
-                HttpClient client = new DefaultHttpClient();
-                HttpGet request = new HttpGet(url);
-                HttpResponse response = client.execute(request);
-                Log.d("5", "");
-                in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-                Log.d("6", "");
-                String line = "";
-                String NL = System.getProperty("line.separator");
-                while ((line = in.readLine()) != null) {
-                    sb.append(line + NL);
+                Uri.Builder builder = new Uri.Builder();
+                builder.scheme("http")
+                        .encodedAuthority(AUTHORITY)
+                        .appendPath(AUTH)
+                        .appendPath(OPERATION);
+                uri = builder.build().toString();
+                URL url = new URL(uri);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                int status = urlConnection.getResponseCode();
+                BufferedReader bufferedReader =new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
+                String webPage = "",data="";
+                while ((data = bufferedReader.readLine()) != null){
+                    webPage += data + "\n";
                 }
-                in.close();
+                bufferedReader.close();
+                if(status == 200) {
+                    result = "done";
+                }
+
+            } catch (IOException e) {
 
 
-            } catch (Exception e) {
-                Log.d("Json Exception", "" + e);
             }
-
-            result = sb.toString();*/
             return result;
         }
         @Override
         protected void onPostExecute(String result) {
-            Toast.makeText(getApplicationContext(), "You have been logged out",
-                    Toast.LENGTH_LONG).show();
-            Intent it = new Intent(Dashboard.this, LoginActivity.class);
-            startActivity(it);
-            finish();
+            if(result.equals("done")) {
+                Intent it = new Intent(Dashboard.this, LoginActivity.class);
+                startActivity(it);
+                finish();
+                Toast.makeText(getBaseContext(), "You have been Logged Out !", Toast.LENGTH_SHORT).show();
+            }
+
         }
 
+    }
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) Dashboard.this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null;
     }
 }

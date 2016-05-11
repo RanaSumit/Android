@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by ranaf on 5/3/2016.
  */
 public class User implements Serializable {
-    private String firstName, lastName,email;
+    private String firstName, lastName, email;
 
     public String getFirstname() {
         return firstName;
